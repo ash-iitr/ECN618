@@ -80,12 +80,11 @@ function symbOut = MODULATION_MAPPER(data, mod_type)
          
      case '64QAM'
         
-       %write logic for 16 QAM symbol mapping , store the final symbols in 'symbOut'
-        for l=0:(floor(length(data)/6) -1)
+       for l=0:((length(data)/6) -1)
         %write logic for 16 QAM symbol mapping , store the final symbols in 'symbOut'
         symbOut(l+1,1) = (1/sqrt(42)) * (((1 - 2*data((6*l) +1)) *( 4 - (1 - 2*data((6*l) +3))*(2-(1 - 2*data((6*l) +5))))) + 1j* ((1 - 2*data((6*l) +2)) *( 4 - (1 - 2*data((6*l) +4))*(2-(1 - 2*data((6*l) +6))))));
         end
-
-     % (1/sqrt(10)) * (((1 - 2*data((6*l) +1)) *( 4 - (1 - 2*data((6*l) +1))*(2-(1 - 2*data((6*l) +1))))) + 1j* ((1 - 2*data((6*l) +1)) *( 4 - (1 - 2*data((6*l) +1))*(2-(1 - 2*data((6*l) +1))))));
+         
+       
    end
 end
