@@ -34,7 +34,7 @@ scatter(real(BS_loc),imag(BS_loc),'blue','LineWidth',2);hold on;
 scatter(real(UE_loc),imag(UE_loc),'red','LineWidth',2)
 grid on;
 
-%% pathloss coeff b/w UE and all APs
+
 %% distance between each AP and UE
 for k=1:16
     for l = 1:16
@@ -67,32 +67,59 @@ ind_y = 0;
 
 %% Calculating ergodic effective channel gain
 
-iters = 1000;
-h = zeros(16,16);
-for ii=1:iters
-    h = h + ((1/sqrt(2)) * (randn(16,16) + 1j*randn(16,16)) .* sqrt(beta));
+hh = (1/sqrt(2)) * (randn(16,16,100) + 1j*randn(16,16,100));
+for(ii=1:100)
+    gg(:,:,ii) = hh(:,:,ii).*sqrt(beta);
 end
-h_avg = h/iters;
+gg_abs_sq = abs(gg).^2;
+mean_gg = sum(gg_abs_sq,3)/100;
 
-maxh = 0;
-ind_hx = 0;
-ind_hy = 0;
+maxg = 0;
+ind_gx = 0;
+ind_gy = 0;
  for k = 1:16
      for l = 1:16
-         if(abs(h_avg(k,l)))>maxh
-             maxh = abs(h_avg(k,l));
-             ind_hx = k;
-             ind_hy = l;
+         if(mean_gg(k,l))>maxg
+             maxg = mean_gg(k,l);
+             ind_gx = k;
+             ind_gy = l;
          end
      end
  end
 
-Y = ["Cell satisfying max ergodic channel gain is ",BS_loc(ind_hx,ind_hy)];
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+% iters = 10000;
+% h = zeros(16,16);
+% for ii=1:iters
+%     h = h + ((1/sqrt(2)) * (randn(16,16) + 1j*randn(16,16)) .* sqrt(beta));
+% end
+% h_avg = h/iters;
+% h_test = abs(h_avg).^2;
+% maxh = 0;
+% ind_hx = 0;
+% ind_hy = 0;
+%  for k = 1:16
+%      for l = 1:16
+%          if(abs(h_avg(k,l)))>maxh
+%              maxh = abs(h_avg(k,l));
+%              ind_hx = k;
+%              ind_hy = l;
+%          end
+%      end
+%  end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Y = ["Cell satisfying max ergodic channel gain is ",BS_loc(ind_gx,ind_gy)];
 X = ["BS serving the user is at ",BS_loc(ind_x,ind_y)];
 disp(Y);
 disp(X);
+max
+maxg
 
-if((ind_x == ind_hx) && (ind_y == ind_hy))
+if((abs(max-maxg) < 0.5) && (ind_x == ind_gx) && (ind_y == ind_gy))
     TestPass = 1;
 else 
     TestPass = 0;
